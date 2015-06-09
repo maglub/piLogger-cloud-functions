@@ -1,0 +1,16 @@
+{
+    "name": "do3meli/pilogger-cloud-functions",
+    "description": "Core Functions Package for piLogger Cloud",
+    "type": "library",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "do3meli",
+            "email": "dominic.schlegel@gmail.com"
+        }
+    ],
+    "require": {
+       "simplon/mysql": "^0.7.0",
+       "datastax/php-driver": "dev-master"
+    }
+}
