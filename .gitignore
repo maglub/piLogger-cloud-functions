@@ -10,3 +10,6 @@
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# ignore composer vendor directory
+/vendor/
