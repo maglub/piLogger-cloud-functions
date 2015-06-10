@@ -4,11 +4,11 @@ namespace piCloudFunctions;
 
 class SensorData {
     
-    protected probeTime;
-    protected probeValue;
-    protected sensorId;
-    protected authToken;
-    protected dbhandler;
+    protected $probeTime;
+    protected $probeValue;
+    protected $sensorId;
+    protected $authToken;
+    protected $dbhandler;
     
     function __construct($dbConnection) {
     	$this->dbhandler = $dbConnection;
@@ -24,10 +24,11 @@ class SensorData {
     
     function saveDataPoint(){
 	    
-	    $this->dbhandler->execute(
-		    new Cassandra\SimpleStatement("INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)"),
-			new Cassandra\ExecutionOptions(array('arguments' => array('26.A1E97B000000','2015-06-09','2015-06-09 14:01:01', 22.234)))	    
-		);
+	    $statement =  $this->dbhandler->prepare('INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)');
+	    
+	    $this->dbhandler->execute($statement, new \Cassandra\ExecutionOptions(array('26.A1E97B000000','2015-06-09',new \Cassandra\Timestamp(1433950852),new \Cassandra\Float( 22.234) )));
+
+	    
     }
     
 }
