@@ -8,10 +8,8 @@ class piCloudHandler {
     protected $mysqlConnection;
     protected $cassandraConnection;
     
-    // constructor
-    function __construct() { 
-	    
-    }
+    // empty constructor
+    function __construct() { }
     
     // setter function for mysql connection
     function setMysqlConnection($mysqlConnection){
@@ -23,22 +21,26 @@ class piCloudHandler {
 	    $this->cassandraConnection = $cassandraConnection;
     }
     
-    
-    function setSensorData($probeTime,$probeValue,$sensorId,$authToken){
-	    $this->probeTime = $probeTime;
-    	$this->probeValue = $probeValue;
-    	$this->sensorId = $sensorId;
-    	$this->authToken = $authToken;    
-    }
-    
-    
-    function saveDataPoint(){
+     
+    // save a new data point to the cassandra database
+    function saveNewDataPoint($sensorId,$probeTime, $probeValue){
 	    
+	    // prepare SQL statement for Cassandra
 	    $statement =  $this->cassandraConnection->prepare('INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)');
 	    
-	    $this->cassandraConnection->execute($statement, new \Cassandra\ExecutionOptions(array('26.A1E97B000000','2015-06-09',new \Cassandra\Timestamp(1433950852),new \Cassandra\Float( 22.234) )));
-
+	    // prepare values for SQL insert
+	    $value = new \Cassandra\Float($probeValue);
+	    $timestamp = new \Cassandra\Timestamp($probeTime);
+	    $day = date('Y-m-d',$probeTime);
 	    
+	    // Execute the prepared SQL statement with Execution Options
+	    $this->cassandraConnection->execute($statement, new \Cassandra\ExecutionOptions(array($sensorId,$day,$timestamp,$value )));
+	    
+    }
+    
+    // check if a given sensor is authenticated by verifying the given token
+    function isSensorAuthenticated($sensorId, $authToken){
+	    echo "test";
     }
     
 }
