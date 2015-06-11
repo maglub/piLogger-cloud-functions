@@ -40,7 +40,27 @@ class piCloudHandler {
     
     // check if a given sensor is authenticated by verifying the given token
     function isSensorAuthenticated($sensorId, $authToken){
-	    echo "test";
+	    
+	    // prepare SQL statement
+		$result = $this->mysqlConnection->prepare('select 1 from sensor s
+													join device d on (d.did = s.attached)
+													join user u on (d.owner = u.uid)
+													where u.authtoken = :token
+													and s.identifier = :sensor ');
+		
+		// bind variables and execute										
+		$this->mysqlConnection->execute(array(':token' => $authToken, ':sensor' => $sensorId ));										
+		
+		
+		// if we got a mysql row back we can return true
+		if ($this->mysqlConnection->rowCount() = 1){
+			return true;
+		}
+		
+		
+		// if we come up to this point we have to return false
+		return false;
+		
     }
     
 }
