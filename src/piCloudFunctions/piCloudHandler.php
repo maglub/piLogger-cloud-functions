@@ -24,7 +24,7 @@ class piCloudHandler {
      
     // save a new data point to the cassandra database
     function saveNewDataPoint($sensorId,$probeTime, $probeValue){
-	    
+	   
 	    // prepare SQL statement for Cassandra
 	    $statement =  $this->cassandraConnection->prepare('INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)');
 	    
@@ -34,7 +34,7 @@ class piCloudHandler {
 	    $day = date('Y-m-d',$probeTime);
 	    
 	    // Execute the prepared SQL statement with Execution Options
-	    $this->cassandraConnection->execute($statement, new \Cassandra\ExecutionOptions(array($sensorId,$day,$timestamp,$value )));
+	    $this->cassandraConnection->execute($statement, new \Cassandra\ExecutionOptions(array($sensorId,$day,$timestamp,$value)));
 	    
     }
     
@@ -42,18 +42,19 @@ class piCloudHandler {
     function isSensorAuthenticated($sensorId, $authToken){
 	    
 	    // prepare SQL statement
-		$result = $this->mysqlConnection->prepare('select 1 from sensor s
+		$stmt = $this->mysqlConnection->prepare('select 1 from sensor s
 													join device d on (d.did = s.attached)
 													join user u on (d.owner = u.uid)
 													where u.authtoken = :token
 													and s.identifier = :sensor ');
 		
 		// bind variables and execute										
-		$this->mysqlConnection->execute(array(':token' => $authToken, ':sensor' => $sensorId ));										
+		$stmt->execute(array(':token' => $authToken, ':sensor' => $sensorId ));										
+		
 		
 		
 		// if we got a mysql row back we can return true
-		if ($this->mysqlConnection->rowCount() = 1){
+		if ($stmt->rowCount() == 1){
 			return true;
 		}
 		
