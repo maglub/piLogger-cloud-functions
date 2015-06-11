@@ -24,17 +24,17 @@ class piCloudHandler {
      
     // save a new data point to the cassandra database
     function saveNewDataPoint($sensorId,$probeTime, $probeValue){
-	   
-	    // prepare SQL statement for Cassandra
-	    $statement =  $this->cassandraConnection->prepare('INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)');
-	    
+	   	    
 	    // prepare values for SQL insert
 	    $value = new \Cassandra\Float($probeValue);
 	    $timestamp = new \Cassandra\Timestamp($probeTime);
 	    $day = date('Y-m-d',$probeTime);
-	    
-	    // Execute the prepared SQL statement with Execution Options
-	    $this->cassandraConnection->execute($statement, new \Cassandra\ExecutionOptions(array($sensorId,$day,$timestamp,$value)));
+	   	
+	   	// execute the statement with above values    
+	    $this->cassandraConnection->execute(
+			new \Cassandra\SimpleStatement("INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)"),
+			new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId,$day,$timestamp,$value )))
+		);
 	    
     }
     
