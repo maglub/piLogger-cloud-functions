@@ -34,19 +34,18 @@ class piCloudHandler {
       $this->cassandraConnection->execute(
          new \Cassandra\SimpleStatement("INSERT INTO sensordata (sensor_id,day,probe_time,probe_value) VALUES (?,?,?,?)"),
          new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId,$day,$timestamp,$value )))
-         );
-	    
+         );   
    }
+   
     
    // check if a given sensor is authenticated by verifying the given token
    function isSensorAuthenticated($sensorId, $authToken){
 	    
       // prepare SQL statement
       $stmt = $this->mysqlConnection->prepare('select 1 from sensor s
-                                                join device d on (d.did = s.attached)
+                                                join device d on (d.did = s.attached) 
                                                 join user u on (d.owner = u.uid)
-                                                where u.authtoken = :token
-                                                and s.identifier = :sensor ');
+                                                where u.authtoken = :token and s.identifier = :sensor ');
 		
       // bind variables and execute										
       $stmt->execute(array(':token' => $authToken, ':sensor' => $sensorId ));										
@@ -67,6 +66,34 @@ class piCloudHandler {
 	    
       // generate an array with all days for the given year
       $allDays = $this->generateDayArray($year);
+
+      // call function to generate json and return array back to user
+     	return getJSONDataPointsAsync($sensorId, $allDays);
+   }
+   
+   // get data for sensorid and month
+   function getDataBySensorMonth($sensorId, $year, $month){
+	    
+      // generate an array with all days for the given year
+      $allDays = $this->generateDayArray($year,$month);
+
+      // call function to generate json and return array back to user
+     	return getJSONDataPointsAsync($sensorId, $allDays);
+   }
+
+   // get data for sensorid and specific day
+   function getDataBySensorMonth($sensorId,,$year,$month, $day){
+	    
+      // generate an array with all days for the given year
+      $allDays = $this->generateDayArray($year,$month, $day);
+
+      // call function to generate json and return array back to user
+     	return getJSONDataPointsAsync($sensorId, $allDays);
+   }
+
+   
+   // this function queries cassandra DB and returns a json
+   function getJSONDataPointsAsync($sensorId, $allDaysArray){
 		
       // prepare the SQL statement
       $statement = $this->cassandraConnection->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
@@ -75,35 +102,28 @@ class piCloudHandler {
       $futures = array();
 
       // execute all statements in background
-      foreach ($allDays as $current_day) {
+      foreach ($allDaysArray as $current_day) {
          // execute statement async and with exec option and hold result in array
          $futures[]= $this->cassandraConnection->executeAsync($statement, new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId, $current_day))));
       }
       
-      // create empty string to hold all data points
-      $datastring = '';
-      
       // wait for all statements to complete
       foreach ($futures as $future) {
+         
          // we will not wait for each result for more than 5 seconds
          $result = $future->get(5);
+         
+         // we loop over each result we get and store it in a data array
          foreach ($result as $row){
-            //echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
-            $datastring .= '['.$row['probe_time']->time().','.$row['probe_value']->value().']';
+            $data[date('Y-m-d H:i:s', $row['probe_time']->time()] = $row['probe_value']->value();
          }
       }
 	
-      return $this->generateJsonResponse($sensorId, $datastring);
-	   	    
+      return array('sensor' => $this->getSensorNameById($sensorId),$this->getSensorTypeById($sensorId) => $data );
    }
     
-    
-   // function that generates the json array for delivery back to the client
-   function generateJsonResponse($sensorId, $data){
-      return array('sensor' => $this->getSensorNameById($sensorId),$this->getSensorTypeById($sensorId) => $data );        
-   }
-    
-    
+      
+   // get a sensor name by a given sensor id 
    function getSensorNameById($sensorId){
        
       // prepare SQL statement
@@ -118,6 +138,8 @@ class piCloudHandler {
       return $row[0]; 
    }
     
+    
+   // get the sensor type by a given sensor id 
    function getSensorTypeById($sensorId){
        
       // prepare SQL statement
@@ -129,9 +151,9 @@ class piCloudHandler {
       // get the result
       $row = $stmt->fetch();
 
-      return $row[0];
-       
+      return $row[0];   
    }
+   
     
    // returns an array with all days for the given period from parameters
    function generateDayArray($year, $month=null, $day=null){
