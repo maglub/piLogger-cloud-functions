@@ -93,7 +93,7 @@ class piCloudHandler {
          }
       }
 	
-      return generateJsonResponse($sensorId, $data);
+      return $this->generateJsonResponse($sensorId, $data);
 	   	    
    }
     
