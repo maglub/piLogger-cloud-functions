@@ -187,8 +187,34 @@ class piCloudHandler {
       }	 
 		 
       return $days;	 
-   }
+	}
 
+    
+   // get all data from all sensor for the plot that has the given name
+   function getDataByGraphName($graphName){
+	    
+	    
+	    
+	    
+   }
+    
+    
+    
+   function getSensorsForGraphName($graphName){
+		
+      // prepare SQL statement
+      $stmt = $this->mysqlConnection->prepare('select identifier from sensor s 
+                                                   JOIN sensor2graph s2g on (s.sid = s2g.sensor)
+                                                   JOIN graph g on (s2g.graph = g.gid)
+                                                   where g.name = :name ');
+      
+      // bind variables and execute										
+      $stmt->execute(array(':name' => $graphName ));										
+		
+      // return the result
+      return $stmt->fetch();
+       
+   }
     
     
     
