@@ -70,12 +70,9 @@ class piCloudHandler {
     function getDataBySensorYear($sensorId,$year){
 	    
 	   
-		$data = array(
-			array('28.777043050000', '2015-06-12'),
-			array('28.777043050000', '2015-06-11')
-		);
+		var_dump(generateDayArray($year);
 
-		$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
+	/*	$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
 		$futures   = array();
 
 		// execute all statements in background
@@ -93,13 +90,13 @@ class piCloudHandler {
 				echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
 			}
 		}
-	 
+	*/ 
 
 	   	    
     }
     
     
-     function generateDataArray($year, $month=null, $day=null){
+    function generateDayArray($year, $month=null, $day=null){
 		 
 		 
 		// create new empty array to hold all days
@@ -109,19 +106,19 @@ class piCloudHandler {
 		// we have just a year param
 		if(is_null($day) and is_null($month)){
 
-			$startday = Carbon\Carbon::create($year)->firstOfYear();
+			$startday = \Carbon\Carbon::create($year)->firstOfYear();
 			$endday = $startday->lastOfYear();	
 		
 		// we have a year and a month set	 
 		}elseif(is_null($day) and !is_null($month)){
 		
-			$startday = Carbon\Carbon::create($year,$month)->firstOfMonth();
+			$startday = \Carbon\Carbon::create($year,$month)->firstOfMonth();
 			$endday = $startday->lastOfMonth();
 		
 		// we have all 3 params 
 		}else{
 			
-			$startday = Carbon\Carbon::create($year,$month,$day);
+			$startday = \Carbon\Carbon::create($year,$month,$day);
 			$endday = $startday;
 			
 		}	
