@@ -69,40 +69,40 @@ class piCloudHandler {
     // get data for sensorid and year
     function getDataBySensorYear($sensorId,$year){
 	    
-	   
-		var_dump(generateDayArray($year));
-
-	/*	$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
+		// generate an array with all days for the given year
+		$allDays = generateDayArray($year);
+		
+		// prepare the SQL statement
+		$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
+		
+		// empty array to hold query results
 		$futures   = array();
 
 		// execute all statements in background
-		foreach ($data as $arguments) {
-			$futures[]= $cluster->executeAsync($statement, new \Cassandra\ExecutionOptions(array(
-                'arguments' => $arguments
-            )));
+		foreach ($allDays as $current_day) {
+			// execute statement async and with exec option and hold result in array
+			$futures[]= $cluster->executeAsync($statement, new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId, $current_day))));
 		}
 
 		// wait for all statements to complete
 		foreach ($futures as $future) {
 			// we will not wait for each result for more than 5 seconds
-			$result = $future->get(10);
+			$result = $future->get(5);
 			foreach ($result as $row){
 				echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
 			}
 		}
-	*/ 
+	
 
 	   	    
     }
     
-    
+    // returns an array with all days for the given period from parameters
     function generateDayArray($year, $month=null, $day=null){
-		 
 		 
 		// create new empty array to hold all days
 		$days = array();
  
-		 
 		// we have just a year param
 		if(is_null($day) and is_null($month)){
 
@@ -122,7 +122,6 @@ class piCloudHandler {
 			return $days;
 			
 		}	
-		
 		
 		// iterate as long as the cur day is less or equals the end day
 		while($startday->lt($endday)){
