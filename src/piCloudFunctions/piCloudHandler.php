@@ -64,6 +64,81 @@ class piCloudHandler {
 		
     }
     
+    
+    
+    // get data for sensorid and year
+    function getDataBySensorYear($sensorId,$year){
+	    
+	   
+		$data = array(
+			array('28.777043050000', '2015-06-12'),
+			array('28.777043050000', '2015-06-11')
+		);
+
+		$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
+		$futures   = array();
+
+		// execute all statements in background
+		foreach ($data as $arguments) {
+			$futures[]= $cluster->executeAsync($statement, new \Cassandra\ExecutionOptions(array(
+                'arguments' => $arguments
+            )));
+		}
+
+		// wait for all statements to complete
+		foreach ($futures as $future) {
+			// we will not wait for each result for more than 5 seconds
+			$result = $future->get(10);
+			foreach ($result as $row){
+				echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
+			}
+		}
+	 
+
+	   	    
+    }
+    
+    
+     function generateDataArray($year, $month=null, $day=null){
+		 
+		 
+		// create new empty array to hold all days
+		$days = array();
+ 
+		 
+		// we have just a year param
+		if(is_null($day) and is_null($month)){
+
+			$startday = Carbon\Carbon::create($year)->firstOfYear();
+			$endday = $startday->lastOfYear();	
+		
+		// we have a year and a month set	 
+		}elseif(is_null($day) and !is_null($month)){
+		
+			$startday = Carbon\Carbon::create($year,$month)->firstOfMonth();
+			$endday = $startday->lastOfMonth();
+		
+		// we have all 3 params 
+		}else{
+			
+			$startday = Carbon\Carbon::create($year,$month,$day);
+			$endday = $startday;
+			
+		}	
+		
+		
+		// iterate as long as the cur day is less or equals the end day
+		while($startday->lte($endday)){
+			array_push($days, $startday->toDateString());
+			$startday = $startday->tomorrow();
+		}	 
+		 
+		return $days;	 
+	}
+
+    
+    
+    
 }
 
 ?>
