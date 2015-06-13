@@ -106,14 +106,14 @@ class piCloudHandler {
 		// we have just a year param
 		if(is_null($day) and is_null($month)){
 
-			$startday = \Carbon\Carbon::create($year)->firstOfYear();
-			$endday = $startday->lastOfYear();	
+			$startday = \Carbon\Carbon::create($year)->startOfYear();
+			$endday = \Carbon\Carbon::create($year)->lastOfYear();	
 		
 		// we have a year and a month set	 
 		}elseif(is_null($day) and !is_null($month)){
 		
 			$startday = \Carbon\Carbon::create($year,$month)->firstOfMonth();
-			$endday = $startday->lastOfMonth();
+			$endday = \Carbon\Carbon::create($year,$month)->lastOfMonth();
 		
 		// we have all 3 params 
 		}else{
@@ -127,7 +127,7 @@ class piCloudHandler {
 		// iterate as long as the cur day is less or equals the end day
 		while($startday->lte($endday)){
 			array_push($days, $startday->toDateString());
-			$startday = $startday->tomorrow();
+			$startday = $startday->addDay();
 		}	 
 		 
 		return $days;	 
