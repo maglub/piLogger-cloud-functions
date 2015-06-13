@@ -99,8 +99,8 @@ class piCloudHandler {
     
     
    // function that generates the json array for delivery back to the client
-   function generateJsonResponse($sensorId, $dataArray){
-      return array('sensor' => $this->getSensorNameById($sensorId),$this->getSensorTypeById($sensorId) => $dataArray );        
+   function generateJsonResponse($sensorId, $data){
+      return array('sensor' => $this->getSensorNameById($sensorId),$this->getSensorTypeById($sensorId) => $data );        
    }
     
     
