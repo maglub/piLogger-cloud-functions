@@ -62,7 +62,7 @@ class piCloudHandler {
     
     
    // get data for sensorid and year
-   function getDataBySensorYear($sensorId,$year){
+   function getDataBySensorYear($sensorId, $year){
 	    
       // generate an array with all days for the given year
       $allDays = $this->generateDayArray($year);
@@ -75,17 +75,17 @@ class piCloudHandler {
    function getDataBySensorMonth($sensorId, $year, $month){
 	    
       // generate an array with all days for the given year
-      $allDays = $this->generateDayArray($year,$month);
+      $allDays = $this->generateDayArray($year, $month);
 
       // call function to generate json and return array back to user
      	return getJSONDataPointsAsync($sensorId, $allDays);
    }
 
    // get data for sensorid and specific day
-   function getDataBySensorMonth($sensorId,,$year,$month, $day){
+   function getDataBySensorDay($sensorId, $year, $month, $day){
 	    
       // generate an array with all days for the given year
-      $allDays = $this->generateDayArray($year,$month, $day);
+      $allDays = $this->generateDayArray($year, $month, $day);
 
       // call function to generate json and return array back to user
      	return getJSONDataPointsAsync($sensorId, $allDays);
