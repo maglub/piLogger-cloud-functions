@@ -70,7 +70,7 @@ class piCloudHandler {
     function getDataBySensorYear($sensorId,$year){
 	    
 	   
-		var_dump(generateDayArray($year);
+		var_dump(generateDayArray($year));
 
 	/*	$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
 		$futures   = array();
