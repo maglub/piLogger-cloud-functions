@@ -80,8 +80,8 @@ class piCloudHandler {
          $futures[]= $this->cassandraConnection->executeAsync($statement, new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId, $current_day))));
       }
       
-      // create empty array to hold all data points
-      $data = array();
+      // create empty string to hold all data points
+      $datastring = '';
       
       // wait for all statements to complete
       foreach ($futures as $future) {
@@ -89,11 +89,11 @@ class piCloudHandler {
          $result = $future->get(5);
          foreach ($result as $row){
             //echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
-            array_push($data, array(date('Y-m-d H:i:s', $row['probe_time']->time()) => $row['probe_value']->value()) );
+            $datastring .= '['.$row['probe_time']->time().','.$row['probe_value']->value().']';
          }
       }
 	
-      return $this->generateJsonResponse($sensorId, $data);
+      return $this->generateJsonResponse($sensorId, $datastring);
 	   	    
    }
     
