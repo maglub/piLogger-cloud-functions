@@ -70,10 +70,10 @@ class piCloudHandler {
     function getDataBySensorYear($sensorId,$year){
 	    
 		// generate an array with all days for the given year
-		$allDays = generateDayArray($year);
+		$allDays = $this->generateDayArray($year);
 		
 		// prepare the SQL statement
-		$statement = $cluster->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
+		$statement = $this->cassandraConnection->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ?");
 		
 		// empty array to hold query results
 		$futures   = array();
@@ -81,7 +81,7 @@ class piCloudHandler {
 		// execute all statements in background
 		foreach ($allDays as $current_day) {
 			// execute statement async and with exec option and hold result in array
-			$futures[]= $cluster->executeAsync($statement, new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId, $current_day))));
+			$futures[]= $this->cassandraConnection->executeAsync($statement, new \Cassandra\ExecutionOptions(array('arguments' => array($sensorId, $current_day))));
 		}
 
 		// wait for all statements to complete
