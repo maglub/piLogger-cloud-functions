@@ -89,7 +89,7 @@ class piCloudHandler {
          $result = $future->get(5);
          foreach ($result as $row){
             //echo "time: ".date('Y-m-d H:i:s',$row['probe_time']->time())." and value: ".$row['probe_value']->value()."\n";
-            array_push($data, date('Y-m-d H:i:s', array($row['probe_time']->time()) => $row['probe_value']->value()) );
+            array_push($data, array(date('Y-m-d H:i:s', $row['probe_time']->time()) => $row['probe_value']->value()) );
          }
       }
 	
