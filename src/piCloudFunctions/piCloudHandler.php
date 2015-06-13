@@ -118,14 +118,14 @@ class piCloudHandler {
 		// we have all 3 params 
 		}else{
 			
-			$startday = \Carbon\Carbon::create($year,$month,$day);
-			$endday = $startday;
+			array_push($days, \Carbon\Carbon::create($year,$month,$day)->toDateString());
+			return $days;
 			
 		}	
 		
 		
 		// iterate as long as the cur day is less or equals the end day
-		while($startday->lte($endday)){
+		while($startday->lt($endday)){
 			array_push($days, $startday->toDateString());
 			$startday = $startday->addDay();
 		}	 
