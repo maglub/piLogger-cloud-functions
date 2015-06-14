@@ -115,7 +115,8 @@ class piCloudHandler {
          
          // we loop over each result we get and store it in a data array
          foreach ($result as $row){
-            $data[date('Y-m-d H:i:s', $row['probe_time']->time())] = $row['probe_value']->value();
+            // we need time in miliseconds and the value with 3 decimal precision
+            $data[$row['probe_time']->time()*1000] = round($row['probe_value']->value(),3);
          }
       }
 	
