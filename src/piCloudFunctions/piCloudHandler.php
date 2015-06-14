@@ -116,7 +116,7 @@ class piCloudHandler {
          // we loop over each result we get and store it in a data array
          foreach ($result as $row){
             // we need time in miliseconds and the value with 3 decimal precision
-            $data[$row['probe_time']->time()*1000] = round($row['probe_value']->value(),3);
+            $data[] = [$row['probe_time']->time() * 1000 , round($row['probe_value']->value(),3)];
          }
       }
 	
@@ -190,15 +190,37 @@ class piCloudHandler {
       return $days;	 
 	}
 
+   
+   function generateDayArrayForDaysBack($daysSince){
+      
+       // create new empty array to hold all days
+      $days = array();
+      
+      // create timenow and timeago objects
+      $timenow = new \Carbon\Carbon(); 
+      $timeago = clone $timenow;
+      $timeago = $timeago->subDay($daysSince);
+      
+      
+      // iterate as long as the cur day is less or equals the end day
+      while($startday->lt($endday)){
+         array_push($days, $startday->toDateString());
+         $startday = $startday->addDay();
+      }	 
+		 
+      return $days;	 
+   } 
+    
     
    // get all data from all sensor for the plot that has the given name
    function getDataByGraphName($graphName){
 	    
-	   return $this->getSensorsAndWindowForGraphName($graphName);   
-	    
+	   $sensorAndTime = $this->getSensorsAndWindowForGraphName($graphName);   
 	    
    }
     
+   
+   
     
     
    function getSensorsAndWindowForGraphName($graphName){
@@ -212,12 +234,17 @@ class piCloudHandler {
       // bind variables and execute										
       $stmt->execute(array(':name' => $graphName ));										
 		
-      // return the result
-      return $stmt->fetch();
+      // save the result
+      $result = $stmt->fetch();
        
-   }
-    
-    
+      // create array
+      foreach ($result as $row) {		 
+         $data[$row[0]] = $row[1]; 
+      }
+      
+      return $data;
+      
+   } 
     
 }
 
