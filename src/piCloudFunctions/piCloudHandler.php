@@ -233,12 +233,9 @@ class piCloudHandler {
       
       // bind variables and execute										
       $stmt->execute(array(':name' => $graphName ));										
-		
-      // save the result
-      $result = $stmt->fetch();
-       
+		       
       // create array
-      foreach ($result as $row) {		 
+      foreach ($stmt as $row) {		 
          $data[$row[0]] = $row[1]; 
       }
       
