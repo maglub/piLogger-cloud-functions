@@ -105,7 +105,7 @@ class piCloudHandler {
       $original_endtime = clone $endtime;  
 		
       // loop as long as starttime is lower than endtime  
-	   while($starttime->lt($original_endtime)){
+      while($starttime->lt($original_endtime)){
          
          // if the endtime is on the same day as the new starttime we use the original time
          if( $original_endtime->isSameDay($starttime) ){
@@ -126,9 +126,6 @@ class piCloudHandler {
          
          // set new start time
          $starttime = $starttime->addDay()->startOfDay();
-         
-
-         
       }
       
       // wait for all statements to complete
@@ -179,6 +176,40 @@ class piCloudHandler {
 
       return $row[0];   
    }
+   
+   
+    // get all data from all sensor for the plot that has the given name
+   function getDataByGraphName($graphName){
+	    
+	   // prepare SQL statement
+      $stmt = $this->mysqlConnection->prepare('select s.identifier, g.dataSinceDays from sensor s 
+                                                   JOIN sensor2graph s2g on (s.sid = s2g.sensor)
+                                                   JOIN graph g on (s2g.graph = g.gid)
+                                                   where g.name = :name ');
+      
+      // bind variables and execute										
+      $stmt->execute(array(':name' => $graphName ));										
+		
+		// create data array to hold results
+		$data = array();
+		       
+      // loop over every returned row
+      foreach ($stmt as $row) {		 
+                  
+         // the endtime for the query is now
+         $endtime = \Carbon\Carbon::now();
+         
+         // the starttime for the query is the endtime minus the dataSinceDays from DB
+         $starttime = clone $endtime;
+         $starttime = $starttime->subDay($row[1]); 
+         
+         array_push($data, $this->getJSONDataPointsAsync($row[0], $starttime, $endtime));
+         
+      }
+      return $data;    
+   }
+   
+  
     
 }
 
