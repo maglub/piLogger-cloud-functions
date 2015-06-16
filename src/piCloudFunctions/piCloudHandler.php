@@ -59,7 +59,51 @@ class piCloudHandler {
       return false;
    }
     
-    
+   
+   // function that creates a new sensor based on the arguments
+   function createNewSensor($sensorId, $devIdent, $devName, $devType, $authToken){
+      
+      // prepare SQL statement
+      $stmt = $this->mysqlConnection->prepare('insert into sensor (name, type, identifier, attached)
+                                                   select :name, :type, :ident, device.did 
+                                                   from device 
+                                                   join user on (device.owner = user.uid)
+                                                   where device.identifier = :devident and user.authToken = :token');
+      // bind variables and execute										
+      $result = $stmt->execute(array(':token' => $authToken, ':name' => $devName, ':type' => $devType, ':ident' => $sensorId,':devident' => $devIdent ));
+      
+      // if 1 row was inserted we are good to return true
+      if($result->rowCount() == 1){
+         return true;
+      }	
+     
+      // otherwise return false
+      return false;
+   }
+   
+   
+   // function that creates a new device based on the arguments
+   function createNewDevice($devName, $devIdent, $authToken){
+      
+      // prepare SQL statement
+      $stmt = $this->mysqlConnection->prepare('insert into device (name, identifier, owner) 
+                                                select :name, :identifier, uid from user where authToken = :token');
+                                                      
+      // bind variables and execute
+      $result = $stmt->execute(array(':token' => $authToken, ':name' => $devName, ':identifier' => $devIdent ));
+      
+      // if 1 row was inserted we are good to return true								
+      if($result->rowCount() == 1){
+         return true;
+      }
+      
+      // otherwise return false
+      return false;
+   }
+   
+   
+
+   
     
    // get data for sensorid and year
    function getDataBySensorYear($sensorId, $year){
