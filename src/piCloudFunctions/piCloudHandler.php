@@ -72,8 +72,8 @@ class piCloudHandler {
       // bind variables and execute										
       $result = $stmt->execute(array(':token' => $authToken, ':name' => $devName, ':type' => $devType, ':ident' => $sensorId,':devident' => $devIdent ));
       
-      // if 1 row was inserted we are good to return true
-      if($result->rowCount() == 1){
+      // if execution was successfull we return true
+      if($result){
          return true;
       }	
      
@@ -92,8 +92,8 @@ class piCloudHandler {
       // bind variables and execute
       $result = $stmt->execute(array(':token' => $authToken, ':name' => $devName, ':identifier' => $devIdent ));
       
-      // if 1 row was inserted we are good to return true								
-      if($result->rowCount() == 1){
+      // if execution was successfull we return true								
+      if($result){
          return true;
       }
       
