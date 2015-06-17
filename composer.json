@@ -15,6 +15,9 @@
         "datastax/php-driver": "dev-master",
         "nesbot/carbon": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*"
+    },
     "autoload": {
         "psr-0": {
             "piCloudFunctions": "src/"
