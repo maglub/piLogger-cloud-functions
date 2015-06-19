@@ -271,7 +271,7 @@ class piCloudHandler {
      
   }
   
-    // function to get all users from mysql database
+  // function to get all sensors from mysql database
   function getAllSensors(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
@@ -280,8 +280,18 @@ class piCloudHandler {
       $stmt->execute();
       $result = $stmt->fetchAll();	
       return $result;
-     
   }
+  
+  // function to get all devices from mysql database
+  function getAllDevices(){
+     
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT d.did, d.name, d.identifier, u.email, u.uid as owner
+                                                FROM device d JOIN user u on (d.owner = u.uid)');
+      $stmt->execute();
+      $result = $stmt->fetchAll();	
+      return $result;
+  }  
   
     
 }
