@@ -293,11 +293,24 @@ class piCloudHandler {
       return $result;
    }  
    
-   // function to get all devices from mysql database
+   // function to get all graphs from mysql database
    function getAllGraphs(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT gid, name, dataSinceDays FROM graph');
+      $stmt->execute();
+      $result = $stmt->fetchAll();	
+      return $result;
+   }  
+   
+   // function to get all views from mysql database
+   function getAllViews(){
+     
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT v.name, u.username, 
+                                                   (SELECT count(*) from graph g join cockpitview v on (g.view = v.cvid) where g.view=v.cvid) as assignedGraphs
+                                                FROM cockpitview v
+                                                JOIN user u on (v.owner = u.uid)');
       $stmt->execute();
       $result = $stmt->fetchAll();	
       return $result;
@@ -352,6 +365,7 @@ class piCloudHandler {
       $result = $stmt->fetch();	
       return $result;
    }
+   
     
 }
 
