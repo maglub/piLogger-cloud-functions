@@ -343,7 +343,15 @@ class piCloudHandler {
       $result = $stmt->fetch();	
       return $result;
    }
-  
+   
+   function getGraphInfo($graphId){
+      
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT name from graph where gid = :graphId');
+      $stmt->execute(array(':graphId' => $graphId ));
+      $result = $stmt->fetch();	
+      return $result;
+   }
     
 }
 
