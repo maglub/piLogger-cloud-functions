@@ -254,6 +254,20 @@ class piCloudHandler {
    }
    
   
+  
+  // function to get all users from mysql database
+  function getAllUsers(){
+     
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('select uid, email from user');
+      $stmt->execute();
+      $result = $stmt->fetchAll();	
+      return $result;
+     
+  }
+  
+  
+  
     
 }
 
