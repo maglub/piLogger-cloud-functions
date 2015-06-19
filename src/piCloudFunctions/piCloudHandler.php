@@ -293,6 +293,22 @@ class piCloudHandler {
       return $result;
   }  
   
+  
+  function getUserInfo($username){
+      
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT u.username,
+                                                   (SELECT COUNT(*) FROM device d WHERE d.owner=u.uid) AS deviceCount,
+                                                   (SELECT COUNT(*) FROM sensor s join device d on (s.attached = d.did) WHERE d.owner=u.uid) AS sensorCount,
+                                                   (SELECT COUNT(*) FROM cockpitview v where v.owner=u.uid) AS viewCount,
+                                                   (SELECT COUNT(*) FROM graph g join cockpitview v on (g.view = v.cvid) WHERE v.owner=u.uid) AS graphCount
+                                                FROM user u
+                                                WHERE u.username = :username');
+      $stmt->execute(array(':username' => $username ));
+      $result = $stmt->fetch();	
+      return $result;
+  }
+  
     
 }
 
