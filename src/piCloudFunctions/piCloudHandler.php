@@ -255,8 +255,8 @@ class piCloudHandler {
    
   
   
-  // function to get all users from mysql database
-  function getAllUsers(){
+   // function to get all users from mysql database
+   function getAllUsers(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT u.username, 
@@ -269,10 +269,10 @@ class piCloudHandler {
       $result = $stmt->fetchAll();	
       return $result;
      
-  }
+   }
   
-  // function to get all sensors from mysql database
-  function getAllSensors(){
+   // function to get all sensors from mysql database
+   function getAllSensors(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('select s.sid,s.name,s.type,s.identifier,d.name as deviceName, d.identifier as devIdent 
@@ -280,10 +280,10 @@ class piCloudHandler {
       $stmt->execute();
       $result = $stmt->fetchAll();	
       return $result;
-  }
+   }
   
-  // function to get all devices from mysql database
-  function getAllDevices(){
+   // function to get all devices from mysql database
+   function getAllDevices(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT d.did, d.name, d.identifier, u.username
@@ -291,10 +291,10 @@ class piCloudHandler {
       $stmt->execute();
       $result = $stmt->fetchAll();	
       return $result;
-  }  
+   }  
   
   
-  function getUserInfo($username){
+   function getUserInfo($username){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT u.username,
@@ -307,7 +307,20 @@ class piCloudHandler {
       $stmt->execute(array(':username' => $username ));
       $result = $stmt->fetch();	
       return $result;
-  }
+   }
+  
+   function getDeviceInfo($deviceId){
+      
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT d.name, d.identifier,u.username
+                                                   FROM device d
+                                                   JOIN user u on (d.owner = u.uid)
+                                                   WHERE d.identifier = :deviceId');
+      $stmt->execute(array(':deviceId' => $deviceId ));
+      $result = $stmt->fetch();	
+      return $result;
+   }
+  
   
     
 }
