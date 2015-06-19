@@ -259,7 +259,7 @@ class piCloudHandler {
   function getAllUsers(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
-      $stmt = $this->mysqlConnection->prepare('SELECT u.uid, u.username, 
+      $stmt = $this->mysqlConnection->prepare('SELECT u.username, 
                                                    (SELECT COUNT(*) FROM device d WHERE d.owner=u.uid) AS deviceCount,
                                                    (SELECT COUNT(*) FROM sensor s join device d on (s.attached = d.did) WHERE d.owner=u.uid) AS sensorCount,
                                                    (SELECT COUNT(*) FROM cockpitview v where v.owner=u.uid) AS viewCount,
@@ -286,7 +286,7 @@ class piCloudHandler {
   function getAllDevices(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
-      $stmt = $this->mysqlConnection->prepare('SELECT d.did, d.name, d.identifier, u.email, u.uid as owner
+      $stmt = $this->mysqlConnection->prepare('SELECT d.did, d.name, d.identifier, u.username
                                                 FROM device d JOIN user u on (d.owner = u.uid)');
       $stmt->execute();
       $result = $stmt->fetchAll();	
