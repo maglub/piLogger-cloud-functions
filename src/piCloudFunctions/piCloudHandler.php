@@ -292,6 +292,16 @@ class piCloudHandler {
       $result = $stmt->fetchAll();	
       return $result;
    }  
+   
+   // function to get all devices from mysql database
+   function getAllGraphs(){
+     
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT gid, name, dataSinceDays FROM graph');
+      $stmt->execute();
+      $result = $stmt->fetchAll();	
+      return $result;
+   }  
   
   
    function getUserInfo($username){
