@@ -259,7 +259,12 @@ class piCloudHandler {
   function getAllUsers(){
      
       // prepare SQL statement, execute it, fetch results into an array and return that
-      $stmt = $this->mysqlConnection->prepare('select uid, email from user');
+      $stmt = $this->mysqlConnection->prepare('SELECT u.uid, u.email, 
+                                                   (SELECT COUNT(*) FROM device d WHERE d.owner=u.uid) AS deviceCount,
+                                                   (SELECT COUNT(*) FROM sensor s join device d on (s.attached = d.did) WHERE d.owner=u.uid) AS sensorCount,
+                                                   (SELECT COUNT(*) FROM cockpitview v where v.owner=u.uid) AS viewCount,
+                                                   (SELECT COUNT(*) FROM graph g join cockpitview v on (g.view = v.cvid) WHERE v.owner=u.uid) AS graphCount
+                                                FROM user AS u');
       $stmt->execute();
       $result = $stmt->fetchAll();	
       return $result;
