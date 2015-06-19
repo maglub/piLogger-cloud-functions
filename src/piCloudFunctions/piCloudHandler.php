@@ -324,7 +324,7 @@ class piCloudHandler {
    function getSensorInfo($sensorId){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
-      $stmt = $this->mysqlConnection->prepare('SELECT s.name, s.type, s.identifier, u.username, d.name as deviceName
+      $stmt = $this->mysqlConnection->prepare('SELECT s.name, s.type, s.identifier, u.username, d.name as deviceName, d.identifier as deviceIdent
                                                 FROM sensor s 
                                                 join device d on (d.did = s.attached) 
                                                 join user u on (d.owner = u.uid)
