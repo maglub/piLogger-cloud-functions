@@ -316,7 +316,7 @@ class piCloudHandler {
       return $result;
    }  
   
-  
+   // get detailed user information
    function getUserInfo($username){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
@@ -331,7 +331,8 @@ class piCloudHandler {
       $result = $stmt->fetch();	
       return $result;
    }
-  
+   
+   // get detailed device information
    function getDeviceInfo($deviceId){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
@@ -343,7 +344,8 @@ class piCloudHandler {
       $result = $stmt->fetch();	
       return $result;
    }
-  
+   
+   // get detailed sensor information
    function getSensorInfo($sensorId){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
@@ -357,12 +359,23 @@ class piCloudHandler {
       return $result;
    }
    
+   // get detailed graph information
    function getGraphInfo($graphId){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT name, dataSinceDays*24 as since from graph where gid = :graphId');
       $stmt->execute(array(':graphId' => $graphId ));
       $result = $stmt->fetch();	
+      return $result;
+   }
+   
+      // get detailed dashboard information
+   function getDashboardInfo($dashboardId){
+      
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT g.name, g.dataSinceDays FROM cockpitview v JOIN graph g ON (g.view = v.cvid) WHERE v.cvid = :viewId');
+      $stmt->execute(array(':viewId' => $dashboardId ));
+      $result = $stmt->fetchAll();	
       return $result;
    }
    
