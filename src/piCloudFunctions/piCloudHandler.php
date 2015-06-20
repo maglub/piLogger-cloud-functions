@@ -370,11 +370,11 @@ class piCloudHandler {
    }
    
       // get detailed dashboard information
-   function getDashboardInfo($dashboardId){
+   function getDashboardInfo($dashboardName){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
-      $stmt = $this->mysqlConnection->prepare('SELECT g.name, g.dataSinceDays FROM cockpitview v JOIN graph g ON (g.view = v.cvid) WHERE v.cvid = :viewId');
-      $stmt->execute(array(':viewId' => $dashboardId ));
+      $stmt = $this->mysqlConnection->prepare('SELECT g.name, g.dataSinceDays FROM cockpitview v JOIN graph g ON (g.view = v.cvid) WHERE v.name = :viewName');
+      $stmt->execute(array(':viewName' => $dashboardName ));
       $result = $stmt->fetchAll();	
       return $result;
    }
