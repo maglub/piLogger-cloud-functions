@@ -20,3 +20,15 @@ The [datastax/php-driver](http://datastax.github.io/php-driver/) requires the Ca
 ```
 extension=/path/to/your/cassandra.so
 ```
+##Cassandra Database Schema
+This package is based on a single Cassandra database table that stores all the measurements from various sensors. You can use the following SQL to create the `sensordata` table:
+
+```
+CREATE TABLE piclouddb.sensordata (
+    sensor_id text,
+    day text,
+    probe_time timestamp,
+    probe_value float,
+    PRIMARY KEY ((sensor_id, day), probe_time)
+)
+```
