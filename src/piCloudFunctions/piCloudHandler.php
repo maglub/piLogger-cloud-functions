@@ -308,7 +308,7 @@ class piCloudHandler {
      
       // prepare SQL statement, execute it, fetch results into an array and return that
       $stmt = $this->mysqlConnection->prepare('SELECT v.name, u.username, 
-                                                   (SELECT count(*) from graph g join cockpitview v on (g.view = v.cvid) where g.view=v.cvid) as assignedGraphs
+                                                   (SELECT count(*) from graph g where g.view=v.cvid) as assignedGraphs
                                                 FROM cockpitview v
                                                 JOIN user u on (v.owner = u.uid)');
       $stmt->execute();
