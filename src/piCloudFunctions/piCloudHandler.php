@@ -369,7 +369,7 @@ class piCloudHandler {
       return $result;
    }
    
-      // get detailed dashboard information
+   // get detailed dashboard information
    function getDashboardInfo($dashboardName){
       
       // prepare SQL statement, execute it, fetch results into an array and return that
@@ -380,7 +380,18 @@ class piCloudHandler {
       return $result;
    }
    
-    
+   // get all connected sensors for a specific device
+   function getSensorsForDevice($deviceId){
+   
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT s.identifier, s.name, s.type FROM sensor s
+                                                   JOIN device d on ( s.attached = d.did)
+                                                   WHERE d.identifier = :device ');
+      $stmt->execute(array(':device' => $deviceId ));
+      $result = $stmt->fetchAll();	
+      return $result; 
+   }
+   
 }
 
 ?>
