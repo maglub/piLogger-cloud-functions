@@ -392,6 +392,21 @@ class piCloudHandler {
       return $result; 
    }
    
+   // get all graphs containing information from a specific sensors
+   function getGraphsForSensor($sensorId){
+   
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT g.gid, g.name, g.dataSinceDays*24 as sinceDays FROM graph g
+                                                   JOIN sensor2graph s2g on (s2g.graph = g.gid) 
+                                                   JOIN sensor s on (s2g.sensor = s.sid)
+                                                   WHERE s.identifier = :sensorId ');
+      $stmt->execute(array(':sensorId' => $sensorId ));
+      $result = $stmt->fetchAll();	
+      return $result; 
+   }
+
+   
+   
 }
 
 ?>
