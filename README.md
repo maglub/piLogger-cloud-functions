@@ -14,12 +14,35 @@ If you are using composer to install this package you wont have to care about in
 * [nesbot/carbon](http://carbon.nesbot.com) for Date and Time representations and calculations
 * [datastax/php-driver](http://datastax.github.io/php-driver/) for the communication with Cassandra databases
 
-##Cassandra Driver
-The [datastax/php-driver](http://datastax.github.io/php-driver/) requires the Cassandra C/C++ driver which needs to be compiled on the system where this package is installed. A detailed build instruction is available [here] (http://datastax.github.io/cpp-driver/topics/building/). Once compiled the `cassandra.so` file needs to be added to the `php.ini` configuration so that the driver gets loaded correctly. If you have PHP and Apache2 installed on your system you most likely want to adjust the `php.ini` files which reside in `/etc/php5/cli/` and `/etc/php5/apache2/` and add the following line:
+##Cassandra Driver Installation
+The [datastax/php-driver](http://datastax.github.io/php-driver/) requires the Cassandra C/C++ driver which needs to be compiled on the system where this package is installed. Follow the below instructions to configure your system correctly:
 
-```
-extension=/path/to/your/cassandra.so
-```
+1. Install all dependencies that are needed
+   ```
+   sudo apt-get install git g++ make cmake libuv-dev libssl-dev php5 php5-dev libgmp-dev libpcre3-dev
+   ```
+
+2.  change your directory to the cassandra PHP driver that has been installed with composer
+   ```
+   cd vendor/datastax/php-driver/
+   ```
+
+3. init all submodules for that driver
+   ```
+   git submodule update --init
+   ```
+   
+4. build the CPP driver now
+   ```
+   cd ext
+   sudo ./install.sh
+   ```
+
+5. add the following line to the php configration file `/etc/php5/cli/php.ini` and `/etc/php5/apache2/php.ini`:
+   ```
+   extension=/usr/lib/php5/20121212/cassandra.so
+   ```
+
 ##Cassandra Database Schema
 This package is based on a single Cassandra database table that stores all the measurements from various sensors. You can use the following SQL to create the `sensordata` table:
 
