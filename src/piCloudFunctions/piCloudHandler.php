@@ -405,7 +405,19 @@ class piCloudHandler {
       return $result; 
    }
 
-   
+   // get detailed sensor information for a specific graph
+   function getSensorsForGraph($graphId){
+      
+      // prepare SQL statement, execute it, fetch results into an array and return that
+      $stmt = $this->mysqlConnection->prepare('SELECT s.identifier as sid, s.name as sensorName , d.identifier as did, d.name as deviceName
+                                                   FROM sensor s join sensor2graph s2g on (s.sid = s2g.sensor) 
+                                                   JOIN device d on (d.did = s.attached) 
+                                                   WHERE s2g.graph = :graphID ');
+      $stmt->execute(array(':graphID' => $graphId ));
+      $result = $stmt->fetchAll();	
+      return $result;
+      
+   }
    
 }
 
