@@ -418,7 +418,28 @@ class piCloudHandler {
       return $result;
       
    }
+
    
+   // save new user into the database
+   function createNewUser($username,$password){
+
+      $pwdhash = password_hash($password, PASSWORD_DEFAULT);
+      $md5user = md5($username);
+
+      // prepare SQL statement
+      $stmt = $this->mysqlConnection->prepare('INSERT INTO user ( username, authtoken, role, password )
+                                                   VALUES ( :username, md5(:authtoken), :role, :password )');
+
+      // execute the insert statement
+      $stmt->execute(array(':username' => $username, 
+                           ':password' => $pwdhash, 
+                           ':role' => 'member', 
+                           ':authtoken' => $md5user));
+
+      // return true if we come up here
+      return $stmt; 
+   }
+ 
 }
 
 ?>
