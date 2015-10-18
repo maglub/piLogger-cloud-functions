@@ -142,6 +142,7 @@ class piCloudHandler {
    // this function queries cassandra DB and returns a json
    function getJSONDataPointsAsync($sensorId, $starttime, $endtime){
 		
+	$data = array();	
       // prepare the SQL statement
       $statement = $this->cassandraConnection->prepare("SELECT probe_time, probe_value FROM sensordata WHERE sensor_id = ? and day = ? and probe_time >= ? and probe_time <= ?");
 		
